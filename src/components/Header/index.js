@@ -1,14 +1,16 @@
+import styles from './Header.module.scss'
+
 function Header() {
     return (
-        <header className="header">
-        <div className="header__left">
-          <img width={40} height={40} src="/img/logo.svg" alt="pic" className="header__logo"/>
-          <div className="header__info">
-            <h3>React-Sneacers</h3>
+        <header className={styles.header}>
+        <div className={styles.header__left}>
+          <img width={40} height={40} src="/img/logo.svg" alt="pic" className={styles.header__logo}/>
+          <div className={styles.header__info}>
+            <h3>React-Sneakers</h3>
             <p className="">Магазин Кроссовок</p>
           </div>
         </div>
-        <ul className="header__right list-reset">
+        <ul className={styles.header__right + ' ' + styles.list__reset}>
           <li>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7.54548 18.1818C7.99735 18.1818 8.36366 17.8155 8.36366 17.3636C8.36366 16.9118 7.99735 16.5455 7.54548 16.5455C7.09361 16.5455 6.72729 16.9118 6.72729 17.3636C6.72729 17.8155 7.09361 18.1818 7.54548 18.1818Z" stroke="#9B9B9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
