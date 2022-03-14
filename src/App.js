@@ -1,43 +1,78 @@
+import Card from "./components/Card";
+import Header from "./components/Header";
+import Drawer from "./components/Drawer";
+import React from "react";
+import axios from 'axios'
 
-
-import Card from './components/Card'
-import Header from './components/Header'
-import Drawer from './components/Drawer'
-
-const arr = [
-  {title : 'Мужские Кроссовки Nike Blazer Mid Suede' , price : 12999 , imageUrl : '/img/sneakers/1.jpg'},
-  {title : 'Мужские Кроссовки Nike Air Max 270' , price : 12999 , imageUrl : '/img/sneakers/2.jpg'},
-  {title : 'Мужские Кроссовки Nike Blazer Mid Suede' , price : 8499, imageUrl : '/img/sneakers/3.jpg'},
-  {title : 'Кроссовки Puma X Aka Boku Future Rider' , price : 8999 , imageUrl : '/img/sneakers/4.jpg'},
-]
 function App() {
+  const [cartOpened, setCartOpened] = React.useState(false);
+
+  const [items, setItems] = React.useState([]);
+  const [cartItems, setCartItems] = React.useState([]);
+  const [inputValue, setInputValue] = React.useState('');
+  React.useEffect(() => {
+      axios.get("https://622f6ba23ff58f023c2017b6.mockapi.io/items").then(res => {
+        setItems(res.data);
+      });
+      axios.get("https://622f6ba23ff58f023c2017b6.mockapi.io/cart").then(res => {
+        setCartItems(res.data);
+      });
+  }, []);
+
+  const onAddToCart = (obj) => {
+    axios.post("https://622f6ba23ff58f023c2017b6.mockapi.io/cart",obj)
+    setCartItems((prev) => [...prev, obj]);
+  };
+
+  const onRemoveToCart = (id) => {
+    setCartItems((prev) => prev.filter(item => item.id !== id));
+    // axios.delete(`https://622f6ba23ff58f023c2017b6.mockapi.io/cart${id}`)
+  }
+
+  const onChangeInputValue = (event) => {
+    setInputValue(event.target.value);
+    console.log(event.target.value);
+  };
+
+
   return (
     <div className="wrapper">
-      
-        <Drawer/>
+      {cartOpened ? (
+        <Drawer items={cartItems} onClose={() => setCartOpened(!cartOpened)} onRemove={onRemoveToCart} />
+      ) : null}
+      <Header onClickCart={() => setCartOpened(!cartOpened)} overflowHidden={() => document.body.style.overflow = 'hidden'}/>
 
-    
-
-    <Header/>
-      
       <div className="content">
         <div className="content__info">
-          <h1>Кроссовки</h1>
+          <h1>
+            {inputValue ? `Поиск по запросу: "${inputValue}"` : "Кроссовки"}
+          </h1>
           <div className="search">
             <img width={16} height={16} src="./img/search.svg" alt="" />
-            <input type="text" placeholder="Поиск"/>
+            <input
+              onChange={onChangeInputValue}
+              value={inputValue}
+              type="search"
+              placeholder="Поиск"
+            />
           </div>
         </div>
 
         <div className="sneakers">
-          {arr.map((obj) => 
-            <Card title={obj.title} price={obj.price} imageUrl={obj.imageUrl}/>
-          )}
+          {items
+            .filter((item) => item.title.toLowerCase().includes(inputValue.toLowerCase()))
+            .map((obj, index) => (
+              <Card
+                key={index}
+                title={obj.title}
+                price={obj.price}
+                imageUrl={obj.imageUrl}
+                onPlus={(obj) => onAddToCart(obj)}
+              />
+            ))}
         </div>
-
       </div>
     </div>
-    
   );
 }
 
