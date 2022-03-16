@@ -44,7 +44,10 @@ body {
     margin: 50px auto;
   }
 
-
+  a {
+    text-decoration: none;
+    color:inherit;
+  }
 
 
 
@@ -111,7 +114,7 @@ body {
     }
 
     .overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       background-color: rgba(0, 0, 0, 0.5);
@@ -122,4 +125,10 @@ body {
   }
 
 
-  
+  .cu-p {
+    cursor: pointer;
+  }
+
+  .hidden {
+    overflow: hidden;
+  }

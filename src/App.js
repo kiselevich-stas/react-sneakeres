@@ -1,78 +1,142 @@
-import Card from "./components/Card";
+import Home from "./pages/Home";
+import Favorites from "./pages/Favorites";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
 import React from "react";
-import axios from 'axios'
+import axios from "axios";
+import { Routes, Route } from "react-router-dom";
+
+export const AppContext = React.createContext({});
 
 function App() {
   const [cartOpened, setCartOpened] = React.useState(false);
 
   const [items, setItems] = React.useState([]);
+  const [favorites, setFavorites] = React.useState([]);
   const [cartItems, setCartItems] = React.useState([]);
-  const [inputValue, setInputValue] = React.useState('');
+  const [inputValue, setInputValue] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(true);
+
   React.useEffect(() => {
-      axios.get("https://622f6ba23ff58f023c2017b6.mockapi.io/items").then(res => {
-        setItems(res.data);
-      });
-      axios.get("https://622f6ba23ff58f023c2017b6.mockapi.io/cart").then(res => {
-        setCartItems(res.data);
-      });
+    async function fetchData() {
+      setIsLoading(true);
+
+      const cartResponce = await axios.get(
+        "https://622f6ba23ff58f023c2017b6.mockapi.io/cart"
+      );
+      const favoritesResponce = await axios.get(
+        "https://622f6ba23ff58f023c2017b6.mockapi.io/favorites"
+      );
+      const itemsResponce = await axios.get(
+        "https://622f6ba23ff58f023c2017b6.mockapi.io/items"
+      );
+
+      setIsLoading(false);
+
+      setCartItems(cartResponce.data);
+      setFavorites(favoritesResponce.data);
+      setItems(itemsResponce.data);
+    }
+    fetchData();
   }, []);
 
   const onAddToCart = (obj) => {
-    axios.post("https://622f6ba23ff58f023c2017b6.mockapi.io/cart",obj)
-    setCartItems((prev) => [...prev, obj]);
+    console.log(obj.id);
+    try {
+      if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
+        axios.delete(
+          `https://622f6ba23ff58f023c2017b6.mockapi.io/cart/${Number(obj.id)}`
+        );
+        setCartItems((prev) =>
+          prev.filter((item) => Number(item.id) !== Number(obj.id))
+        );
+      } else {
+        axios.post("https://622f6ba23ff58f023c2017b6.mockapi.io/cart", obj);
+        setCartItems((prev) => [...prev, obj]);
+      }
+      console.log(cartItems);
+    } catch (error) {
+      alert("Случилось плохо");
+    }
+  };
+
+  const onAddToFavorite = async (obj) => {
+    try {
+      if (favorites.find((item) => Number(item.id) === Number(obj.id))) {
+        axios.delete(
+          `https://622f6ba23ff58f023c2017b6.mockapi.io/favorites/${obj.id}`
+        );
+        setFavorites((prev) =>
+          prev.filter((item) => Number(item.id) !== Number(obj.id))
+        );
+      } else {
+        const { data } = await axios.post(
+          "https://622f6ba23ff58f023c2017b6.mockapi.io/favorites",
+          obj
+        ); ///{data} == response.data
+        setFavorites((prev) => [...prev, data]);
+      }
+    } catch (error) {
+      alert("Shittt!");
+    }
   };
 
   const onRemoveToCart = (id) => {
-    setCartItems((prev) => prev.filter(item => item.id !== id));
-    // axios.delete(`https://622f6ba23ff58f023c2017b6.mockapi.io/cart${id}`)
-  }
+    console.log(id);
+    axios.delete(`https://622f6ba23ff58f023c2017b6.mockapi.io/cart/${Number(id)}`);
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
   const onChangeInputValue = (event) => {
     setInputValue(event.target.value);
-    console.log(event.target.value);
   };
 
-
+  const isItemAdded = (id) => {
+    return cartItems.some((item) => Number(item.id) === Number(id))
+  }
   return (
-    <div className="wrapper">
-      {cartOpened ? (
-        <Drawer items={cartItems} onClose={() => setCartOpened(!cartOpened)} onRemove={onRemoveToCart} />
-      ) : null}
-      <Header onClickCart={() => setCartOpened(!cartOpened)} overflowHidden={() => document.body.style.overflow = 'hidden'}/>
-
-      <div className="content">
-        <div className="content__info">
-          <h1>
-            {inputValue ? `Поиск по запросу: "${inputValue}"` : "Кроссовки"}
-          </h1>
-          <div className="search">
-            <img width={16} height={16} src="./img/search.svg" alt="" />
-            <input
-              onChange={onChangeInputValue}
-              value={inputValue}
-              type="search"
-              placeholder="Поиск"
-            />
-          </div>
-        </div>
-
-        <div className="sneakers">
-          {items
-            .filter((item) => item.title.toLowerCase().includes(inputValue.toLowerCase()))
-            .map((obj, index) => (
-              <Card
-                key={index}
-                title={obj.title}
-                price={obj.price}
-                imageUrl={obj.imageUrl}
-                onPlus={(obj) => onAddToCart(obj)}
+    <AppContext.Provider value={{ items, favorites, cartItems, isItemAdded , onAddToFavorite , setCartOpened , onRemoveToCart, setCartItems}}>
+      <div className="wrapper">
+        {cartOpened ? (
+          <Drawer
+          />
+        ) : null}
+        <Header
+          onClickCart={() => {
+            return setCartOpened(!cartOpened);
+          }}
+        />
+        <Routes>
+          {" "}
+          <Route
+            path=""
+            exact
+            element={
+              <Home
+                items={items}
+                inputValue={inputValue}
+                cartItems={cartItems}
+                onAddToCart={onAddToCart}
+                onAddToFavorite={onAddToFavorite}
+                onChangeInputValue={onChangeInputValue}
+                isLoading={isLoading}
               />
-            ))}
-        </div>
+            }
+          ></Route>{" "}
+        </Routes>
+        <Routes>
+          {" "}
+          <Route
+            path="/favorites"
+            exact
+            element={
+              <Favorites
+              />
+            }
+          ></Route>{" "}
+        </Routes>
       </div>
-    </div>
+    </AppContext.Provider>
   );
 }
 
