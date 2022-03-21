@@ -126,7 +126,7 @@ function App() {
         <Routes>
           {" "}
           <Route
-            path="react-sneakeres/"
+            path=""
             exact
             element={
               <Home
@@ -143,11 +143,11 @@ function App() {
         </Routes>
         <Routes>
           {" "}
-          <Route path="react-sneakeres/favorites" exact element={<Favorites />}></Route>{" "}
+          <Route path="favorites" exact element={<Favorites />}></Route>{" "}
         </Routes>
         <Routes>
           {" "}
-          <Route path="react-sneakeres/orders" exact element={<Orders />}></Route>{" "}
+          <Route path="orders" exact element={<Orders />}></Route>{" "}
         </Routes>
       </div>
     </AppContext.Provider>
