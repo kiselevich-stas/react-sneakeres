@@ -73,7 +73,7 @@ function Drawer(props) {
                       className={styles.btn__remove}
                       width={32}
                       height={32}
-                      src="/img/close.svg"
+                      src="img/close.svg"
                       alt=""
                       onClick={() => onRemoveToCart(obj.id)}
                     />
@@ -101,7 +101,7 @@ function Drawer(props) {
                 className={styles.btn__reset + " " + styles.green__btn}
               >
                 Оформить заказ
-                <img  src={ isLoading ? '': "/img/arrow.svg"} alt="" />
+                <img  src={ isLoading ? '': "img/arrow.svg"} alt="" />
               </button>
             </div>
           </div>

@@ -15,7 +15,7 @@ function Header({onClickCart}) {
         <Link to=''>
           <div className={styles.header__left}>
             
-            <img width={40} height={40} src="/img/logo.svg" alt="pic" className={styles.header__logo}/>
+            <img width={40} height={40} src="img/logo.svg" alt="pic" className={styles.header__logo}/>
             <div className={styles.header__info}>
               <h3>React-Sneakers</h3>
               <p className="">Магазин Кроссовок</p>
