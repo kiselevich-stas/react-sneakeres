@@ -43,8 +43,8 @@ function Card(props) {
             { props.onFavorite && <img
               src={
                 isFavorite
-                  ? "../../img/heart-liked.svg"
-                  : "../../img/heart-unliked.svg"
+                  ? "./img/heart-liked.svg"
+                  : "./img/heart-unliked.svg"
               }
               alt="heart"
               onClick={onClickFavorite}
@@ -63,8 +63,8 @@ function Card(props) {
               height={32}
               src={
                 isItemAdded(props.id)
-                  ? "../../img/btn-cheked.svg"
-                  : "../../img/btn-uncheked.svg"
+                  ? "./img/btn-cheked.svg"
+                  : "./img/btn-uncheked.svg"
               }
               alt=""
               onClick={onClickPlus}
