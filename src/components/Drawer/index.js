@@ -4,7 +4,7 @@ import { AppContext } from "../../App";
 import React from "react";
 import axios from "axios";
 
-function Drawer() {
+function Drawer(props) {
   const [isOrderComplete, setIsOrderComplete] = React.useState(false);
   const [isOrderId, setIsOrderId] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -12,6 +12,7 @@ function Drawer() {
   const {setCartItems, cartItems, setCartOpened, onRemoveToCart } =
     React.useContext(AppContext);
 
+  const CartPrice = cartItems.reduce((acc,cur) => cur.price + acc,0)
 
   
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -40,8 +41,8 @@ function Drawer() {
 
 
   return (
-    <div className="overlay">
-      <div className={styles.drawer}>
+    <div className={`overlay ${props.opened ? styles.overlayVisible : ''  }`}>
+      <div className={styles.drawer }>
         <div className={styles.drawer__title}>
           <h2>Корзина</h2>
           <img
@@ -86,12 +87,12 @@ function Drawer() {
                 <li>
                   <span>Итого:</span>
                   <div></div>
-                  <b>21 498 руб.</b>
+                  <b>{CartPrice} руб.</b>
                 </li>
                 <li>
                   <span>Налог 5%:</span>
                   <div></div>
-                  <b>1074 руб.</b>
+                  <b>{Math.floor(CartPrice * 0.05)} руб.</b>
                 </li>
               </ul>
               <button

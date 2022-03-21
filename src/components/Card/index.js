@@ -11,7 +11,7 @@ function Card(props) {
   // console.log(props.title , isItemAdded(props.id));
 
   const onClickPlus = () => {
-    props.onPlus(props);
+    props.onPlus({...props,parentId : props.id});
 
   };
   const onClickFavorite = () => {
@@ -40,7 +40,7 @@ function Card(props) {
       ) : (
         <>
           <div className={styles.favorite}>
-            <img
+            { props.onFavorite && <img
               src={
                 isFavorite
                   ? "../../img/heart-liked.svg"
@@ -48,7 +48,7 @@ function Card(props) {
               }
               alt="heart"
               onClick={onClickFavorite}
-            />
+            />}
           </div>
           <img width={133} height={112} src={props.imageUrl} alt="" />
           <p>{props.title}</p>
@@ -57,7 +57,7 @@ function Card(props) {
               <span>Цена:</span>
               <b>{props.price} руб.</b>
             </div>
-            <img
+            { props.onPlus && <img
               className={styles.card__btn}
               width={32}
               height={32}
@@ -68,7 +68,7 @@ function Card(props) {
               }
               alt=""
               onClick={onClickPlus}
-            />
+            />}
           </div>
         </>
       )}
